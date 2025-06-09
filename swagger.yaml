@@ -1,0 +1,94 @@
+
+openapi: 3.0.0
+info:
+  title: Payment Service API
+  version: 1.0.0
+  description: API for managing payments using Stripe
+servers:
+  - url: http://localhost:8081/api/v1/pay
+paths:
+  /customers:
+    post:
+      summary: Create or retrieve a Stripe customer
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Customer created or returned
+  /setup-intents:
+    post:
+      summary: Create a Stripe SetupIntent
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: SetupIntent created
+  /payment-methods:
+    get:
+      summary: List user's saved payment methods
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: List of payment methods
+  /payment-intents:
+    post:
+      summary: Create a Stripe PaymentIntent
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user_id:
+                  type: string
+                customer_id:
+                  type: string
+                booking_id:
+                  type: string
+                amount:
+                  type: integer
+                currency:
+                  type: string
+                payment_method:
+                  type: string
+      responses:
+        '200':
+          description: PaymentIntent created
+  /payment-intents/capture:
+    post:
+      summary: Capture a PaymentIntent
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                payment_intent_id:
+                  type: string
+      responses:
+        '200':
+          description: PaymentIntent captured
+  /payment-intents/cancel:
+    post:
+      summary: Cancel a PaymentIntent
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                payment_intent_id:
+                  type: string
+      responses:
+        '200':
+          description: PaymentIntent canceled
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
